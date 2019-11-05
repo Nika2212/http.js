@@ -77,14 +77,13 @@ class HTTP {
         return new Promise((success, fail) => {
             if (errorMode) {
                 setTimeout(() => {
-                    fail();
+                    fail('ERROR');
                 }, timeout);
             } else {
                 let step = 0;
                 let interval;
                 setTimeout(() => {
                     clearInterval(interval);
-                    onProgressCallback(1);
                     success();
                 }, timeout);
                 if (onProgressCallback !== null && typeof onProgressCallback === 'function') {
@@ -101,9 +100,3 @@ class HTTP {
         });
     }
 }
-
-HTTP.imitateRequest(5000, false, 8, (percentage) => {
-    console.log(percentage);
-})
-    .then(() => console.log('FETCHING DONE'))
-    .catch((err) => console.error(err));
