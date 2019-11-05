@@ -76,19 +76,22 @@ class HTTP {
     static imitateRequest(timeout = 3000, errorMode = false, progressSteps = 6, onProgressCallback = null) {
         return new Promise((success, fail) => {
             if (errorMode) {
-                fail('FATAL ERROR');
-            } else {
                 setTimeout(() => {
+                    fail();
+                }, timeout);
+            } else {
+                let step = 0;
+                let interval;
+                setTimeout(() => {
+                    clearInterval(interval);
+                    onProgressCallback(1);
                     success();
                 }, timeout);
                 if (onProgressCallback !== null && typeof onProgressCallback === 'function') {
-                    let step = 0;
-                    let percent = 0;
-                    let interval;
                     interval = setInterval(() => {
                         if (step < progressSteps) {
                             step++;
-                            onProgressCallback(progressSteps);
+                            onProgressCallback((step / progressSteps));
                         } else {
                             clearInterval(interval);
                         }
@@ -98,3 +101,9 @@ class HTTP {
         });
     }
 }
+
+HTTP.imitateRequest(5000, false, 8, (percentage) => {
+    console.log(percentage);
+})
+    .then(() => console.log('FETCHING DONE'))
+    .catch((err) => console.error(err));
